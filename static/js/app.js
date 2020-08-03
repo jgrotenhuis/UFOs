@@ -1,43 +1,80 @@
+// from data.js
+const tableData = data;
+
+// get table references
+var tbody = d3.select("tbody");
+
 function buildTable(data) {
-    // Clear out any existing data in the table
-    tbody.html("");
+  // First, clear out any existing data
+  tbody.html("");
 
-    // Create the for loop and function dataRow
-    // Add code to append a row to the table body
-    data.forEach((dataRow) => {
-        // Append a row to the table body
-        let row = tbody.append("tr");
+  // Next, loop through each object in the data
+  // and append a row and cells for each value in the row
+  data.forEach((dataRow) => {
+    // Append a row to the table body
+    let row = tbody.append("tr");
 
-        // Loop through each field in the dataRow and add
-        // each value to a table cell (td)
-        Object.values(dataRow).forEach((val) => {
-            let cell = row.append("td");
-            cell.text(val);
-            }
-        );
+    // Loop through each field in the dataRow and add
+    // each value as a table cell (td)
+    Object.values(dataRow).forEach((val) => {
+      let cell = row.append("td");
+      cell.text(val);
     });
+  });
 }
-
-function handleClick() {
-    // Grab the datetime value from the filter
-    let date = d3.select("#datetime").property("value");
-    let filteredData = tableData; 
-
-    // Check to see if the date was entered and filte the data using that date
-    if (date) {
-        // Apply "filte" to the table data to only keep the rows 
-        // where the datetime calue matches the filte value
-        filteredData = filteredData.filter(row => row.datetime === date);
-    };
-
-    // Rebuild the table using the filtered data
-    // @note: if no date was entered, the filteredData will
-    // just be the original data
-    buildTable(filteredData);
-}
-
-// Code to listen for an event
-d3.selectAll("#filter-btn").on("click", handleClick);
 
 // Build the table when the page loads
 buildTable(tableData);
+
+// This function will replace your handleClick function
+function updateFilters() {
+
+  // Save the element, value, and id of the filter that was changed
+  let date = d3.select("#datetime").property("value");
+  let city = d3.select("#city").property("value");
+  let state = d3.select("#state").property("value");
+  let country = d3.select("#country").property("value");
+  let shape = d3.select("#shape").property("value");
+  let filteredData = tableData;
+  
+  // Check to see if a date was entered and filter the data using that date.
+  if (date) {
+      // Apply `filter` to the table data to only keep the
+      // rows where the `datetime` value matches the filter value
+      filteredData = filteredData.filter(row => row.datetime === date);
+  }
+
+  // Check to see if a city was entered and filter the data using that city.
+  if (city) {
+      // Apply `filter` to the table data to only keep the
+      // rows where the `city` value matches the filter value
+      filteredData = filteredData.filter(row => row.city === city);
+    }
+
+  if (state) {
+      // Apply `filter` to the table data to only keep the
+      // rows where the `state` value matches the filter value
+      filteredData = filteredData.filter(row => row.state === state);
+    }
+
+  if (country) {
+      // Apply `filter` to the table data to only keep the
+      // rows where the `country` value matches the filter value
+      filteredData = filteredData.filter(row => row.country === country);
+  }
+
+  if (shape) {
+      // Apply `filter` to the table data to only keep the
+      // rows where the `shape` value matches the filter value
+      filteredData = filteredData.filter(row => row.shape === shape);
+  }
+
+  // Call function to apply all filters and rebuild the table
+  buildTable(filteredData);
+  // This line is used to print specific lines of code testing in the console of dev tools in the browser:
+  //console.log(date)
+}
+
+// Attach an event to listen for changes to each filter
+// Hint: You'll need to select the event and what it is listening for within each set of parenthesis
+d3.selectAll("#filter-btn").on("click", updateFilters);
